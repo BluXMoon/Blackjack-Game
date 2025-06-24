@@ -1,0 +1,16 @@
+{
+    "name": "Blackjack.Editor",
+    "rootNamespace": "",
+    "references": ["GUID:8ca311c5b1124419ba49bb435e961f33","GUID:9865cab9c4ef1478e9ca417cf6dbd783"],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
