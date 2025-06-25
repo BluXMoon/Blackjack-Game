@@ -8,7 +8,7 @@ namespace Blackjack
 
         public void AddCard(BlackjackCard card) => Cards.Add(card);
 
-        public int GetValue()
+        public int GetScore()
         {
             int total = 0;
             int aceCount = 0;
@@ -31,7 +31,7 @@ namespace Blackjack
             return total;
         }
 
-        public bool IsBlackjack => Cards.Count == 2 && GetValue() == 21;
-        public bool IsGameOver => GetValue() > 21;
+        public bool IsBlackjack => Cards.Count == 2 && GetScore() == 21;
+        public bool IsGameOver => GetScore() > 21;
     }
 }

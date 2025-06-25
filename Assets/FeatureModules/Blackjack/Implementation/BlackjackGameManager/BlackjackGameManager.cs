@@ -13,6 +13,8 @@ namespace Blackjack
 
         public Action<BlackjackCard> OnPlayerCardDrawn { get; set; }
         public Action<BlackjackCard> OnDealerCardDrawn { get; set; }
+        public int PlayerScore => _playerHand.GetScore();
+        public int DealerScore => _dealerHand.GetScore();
 
         private void Start() => StartGame();
 
@@ -43,7 +45,7 @@ namespace Blackjack
 
         public void PlayerStands()
         {
-            while (_dealerHand.GetValue() < 17)
+            while (_dealerHand.GetScore() < 17)
             {
                 DrawForDealer();
             }
@@ -67,8 +69,8 @@ namespace Blackjack
 
         private void EndGame()
         {
-            var player = _playerHand.GetValue();
-            var dealer = _dealerHand.GetValue();
+            var player = _playerHand.GetScore();
+            var dealer = _dealerHand.GetScore();
 
             var result = "Draw!";
             
