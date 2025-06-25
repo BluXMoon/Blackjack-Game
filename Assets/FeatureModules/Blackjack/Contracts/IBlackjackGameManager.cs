@@ -8,6 +8,7 @@ namespace Blackjack
         Action OnPlayerStands { get; set; }
         Action<BlackjackCard> OnDealerCardDrawn { get; set; }
         Action<GameOutcome> OnGameOver { get; set; }
+        Action OnGameRestart { get; set; }
         int PlayerScore { get; }
         int DealerScore { get; }
         void RestartGame();

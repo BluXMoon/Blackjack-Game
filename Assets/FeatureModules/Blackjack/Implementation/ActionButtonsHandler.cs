@@ -9,5 +9,6 @@ namespace Blackjack
         
         public void PlayerHit() => _blackjackGameManager.PlayerHits();
         public void PlayerStand() => _blackjackGameManager.PlayerStands();
+        public void Restart() => _blackjackGameManager.RestartGame();
     }
 }

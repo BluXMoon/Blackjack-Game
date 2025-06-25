@@ -44,3 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 236d0daaefe844f0985196b3447405e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gamePhase: {fileID: 11400000, guid: f993fcdd0e6e84bb5bb1edbb2dd1ad8a, type: 2}
+  gameOverPhase: {fileID: 11400000, guid: ef758679bfdcd40e384bc5f4269502fc, type: 2}

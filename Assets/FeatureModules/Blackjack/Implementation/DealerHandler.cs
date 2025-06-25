@@ -18,7 +18,7 @@ namespace Blackjack
         
         [Inject] private IBlackjackGameManager _blackjackGameManager;
 
-        private List<CardHandler> _spawnedCards = new();
+        private List<CardHandler> _allCards = new();
         
         private int _cardCount;
 
@@ -26,12 +26,14 @@ namespace Blackjack
         {
             _blackjackGameManager.OnDealerCardDrawn += DealerGetsNewCard;
             _blackjackGameManager.OnPlayerStands += PlayerStands;
+            _blackjackGameManager.OnGameRestart += ClearAllCardsAndRestart;
         }
 
         private void OnDestroy()
         {
             _blackjackGameManager.OnDealerCardDrawn -= DealerGetsNewCard;
             _blackjackGameManager.OnPlayerStands -= PlayerStands;
+            _blackjackGameManager.OnGameRestart -= ClearAllCardsAndRestart;
         }
 
         private void DealerGetsNewCard(BlackjackCard card)
@@ -45,17 +47,24 @@ namespace Blackjack
             if (!newCardGameObject.TryGetComponent<CardHandler>(out var cardHandler)) return;
 
             cardHandler.SetCard(card, getFaceDownCard);
-            _spawnedCards.Add(cardHandler);
+            _allCards.Add(cardHandler);
         }
         
         private void PlayerStands() => ShowAllCards();
 
         private void ShowAllCards()
         {
-            if(_spawnedCards.Count <= 0) return;
+            if(_allCards.Count <= 0) return;
             
-            _spawnedCards.ForEach(c => c.RevealCard());
+            _allCards.ForEach(c => c.RevealCard());
             scoreText.text = "Score: " + _blackjackGameManager.DealerScore;
+        }
+        
+        private void ClearAllCardsAndRestart()
+        {
+            _allCards.ForEach(c => Destroy(c.gameObject));
+            _allCards.Clear();
+            _cardCount = 0;
         }
     }
 }

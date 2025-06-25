@@ -1,4 +1,5 @@
 using System;
+using Phases;
 using UnityEngine;
 using Zenject;
 
@@ -6,15 +7,20 @@ namespace Blackjack
 {
     public class BlackjackGameManager : MonoBehaviour, IBlackjackGameManager
     {
+        [SerializeField] private Phase gamePhase;
+        [SerializeField] private Phase gameOverPhase;
+        
         private BlackjackHand _playerHand;
         private BlackjackHand _dealerHand;
         
         [Inject] private IDeckManager _deckManager;
+        [Inject] private IPhaseSetter _phaseSetter;
 
         public Action<BlackjackCard> OnPlayerCardDrawn { get; set; }
         public Action OnPlayerStands { get; set; }
         public Action<BlackjackCard> OnDealerCardDrawn { get; set; }
         public Action<GameOutcome> OnGameOver { get; set; }
+        public Action OnGameRestart { get; set; }
         public int PlayerScore => _playerHand.GetScore();
         public int DealerScore => _dealerHand.GetScore();
 
@@ -35,7 +41,12 @@ namespace Blackjack
             CheckForBlackjack();
         }
 
-        public void RestartGame() => StartGame();
+        public void RestartGame()
+        {
+            _phaseSetter.SetPhase(gamePhase);
+            OnGameRestart?.Invoke();
+            StartGame();
+        }
 
         public void PlayerHits()
         {
@@ -84,6 +95,7 @@ namespace Blackjack
             else if (dealer > player) result = GameOutcome.DealerWon;
             
             OnGameOver?.Invoke(result);
+            _phaseSetter.SetPhase(gameOverPhase);
         }
 
         private void CheckForBlackjack()
