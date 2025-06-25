@@ -27,7 +27,7 @@ namespace Blackjack
 
             if (!newCardGameObject.TryGetComponent<CardHandler>(out var cardHandler)) return;
             
-            cardHandler.SetCard(card.GetSprite());
+            cardHandler.SetCard(card);
         }
     }
 }

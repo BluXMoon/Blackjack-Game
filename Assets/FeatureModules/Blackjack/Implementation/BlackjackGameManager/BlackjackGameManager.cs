@@ -12,7 +12,9 @@ namespace Blackjack
         [Inject] private IDeckManager _deckManager;
 
         public Action<BlackjackCard> OnPlayerCardDrawn { get; set; }
+        public Action OnPlayerStands { get; set; }
         public Action<BlackjackCard> OnDealerCardDrawn { get; set; }
+        public Action<GameOutcome> OnGameOver { get; set; }
         public int PlayerScore => _playerHand.GetScore();
         public int DealerScore => _dealerHand.GetScore();
 
@@ -45,6 +47,8 @@ namespace Blackjack
 
         public void PlayerStands()
         {
+            OnPlayerStands?.Invoke();
+            
             while (_dealerHand.GetScore() < 17)
             {
                 DrawForDealer();
@@ -72,14 +76,14 @@ namespace Blackjack
             var player = _playerHand.GetScore();
             var dealer = _dealerHand.GetScore();
 
-            var result = "Draw!";
+            var result = GameOutcome.Draw;
             
-            if (player > 21) result = "Player Busts!";
-            else if (dealer > 21) result = "Dealer Busts!";
-            else if (player > dealer) result = "Player Wins!";
-            else if (dealer > player) result = "Dealer Wins!";
-
-            Debug.Log(result);
+            if (player > 21) result = GameOutcome.PlayerLost;
+            else if (dealer > 21) result = GameOutcome.DealerLost;
+            else if (player > dealer) result = GameOutcome.PlayerWon;
+            else if (dealer > player) result = GameOutcome.DealerWon;
+            
+            OnGameOver?.Invoke(result);
         }
 
         private void CheckForBlackjack()

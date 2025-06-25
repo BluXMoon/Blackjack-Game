@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -17,10 +18,21 @@ namespace Blackjack
         
         [Inject] private IBlackjackGameManager _blackjackGameManager;
 
+        private List<CardHandler> _spawnedCards = new();
+        
         private int _cardCount;
 
-        private void Awake() => _blackjackGameManager.OnDealerCardDrawn += DealerGetsNewCard;
-        private void OnDestroy() => _blackjackGameManager.OnDealerCardDrawn -= DealerGetsNewCard;
+        private void Awake()
+        {
+            _blackjackGameManager.OnDealerCardDrawn += DealerGetsNewCard;
+            _blackjackGameManager.OnPlayerStands += PlayerStands;
+        }
+
+        private void OnDestroy()
+        {
+            _blackjackGameManager.OnDealerCardDrawn -= DealerGetsNewCard;
+            _blackjackGameManager.OnPlayerStands -= PlayerStands;
+        }
 
         private void DealerGetsNewCard(BlackjackCard card)
         {
@@ -32,7 +44,18 @@ namespace Blackjack
 
             if (!newCardGameObject.TryGetComponent<CardHandler>(out var cardHandler)) return;
 
-            cardHandler.SetCard(card.GetSprite(getFaceDownCard));
+            cardHandler.SetCard(card, getFaceDownCard);
+            _spawnedCards.Add(cardHandler);
+        }
+        
+        private void PlayerStands() => ShowAllCards();
+
+        private void ShowAllCards()
+        {
+            if(_spawnedCards.Count <= 0) return;
+            
+            _spawnedCards.ForEach(c => c.RevealCard());
+            scoreText.text = "Score: " + _blackjackGameManager.DealerScore;
         }
     }
 }
