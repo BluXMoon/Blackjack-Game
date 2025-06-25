@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Zenject;
 
@@ -10,6 +11,9 @@ namespace Blackjack
         
         [Inject] private IDeckManager _deckManager;
 
+        public Action<BlackjackCard> OnPlayerCardDrawn { get; set; }
+        public Action<BlackjackCard> OnDealerCardDrawn { get; set; }
+
         private void Start() => StartGame();
 
         private void StartGame()
@@ -18,13 +22,12 @@ namespace Blackjack
             _dealerHand = new BlackjackHand();
 
             // Initial 2 cards each
-            _playerHand.AddCard(_deckManager.DrawCard());
-            _dealerHand.AddCard(_deckManager.DrawCard());
+            DrawForPlayer();
+            DrawForDealer();
             
-            _playerHand.AddCard(_deckManager.DrawCard());
-            _dealerHand.AddCard(_deckManager.DrawCard());
+            DrawForPlayer();
+            DrawForDealer();
 
-            ShowHands();
             CheckForBlackjack();
         }
 
@@ -32,8 +35,7 @@ namespace Blackjack
 
         public void PlayerHits()
         {
-            _playerHand.AddCard(_deckManager.DrawCard());
-            ShowHands();
+            DrawForPlayer();
 
             if (_playerHand.IsGameOver)
                 EndGame();
@@ -43,11 +45,24 @@ namespace Blackjack
         {
             while (_dealerHand.GetValue() < 17)
             {
-                _dealerHand.AddCard(_deckManager.DrawCard());
+                DrawForDealer();
             }
 
-            ShowHands();
             EndGame();
+        }
+
+        private void DrawForPlayer()
+        {
+            var card = _deckManager.DrawCard();
+            _playerHand.AddCard(card);
+            OnPlayerCardDrawn?.Invoke(card);
+        }
+
+        private void DrawForDealer()
+        {
+            var card = _deckManager.DrawCard();
+            _dealerHand.AddCard(card);
+            OnDealerCardDrawn?.Invoke(card);
         }
 
         private void EndGame()
@@ -63,12 +78,6 @@ namespace Blackjack
             else if (dealer > player) result = "Dealer Wins!";
 
             Debug.Log(result);
-        }
-
-        private void ShowHands()
-        {
-            Debug.Log($"Player: {_playerHand.GetValue()}");
-            Debug.Log($"Dealer: {_dealerHand.GetValue()}");
         }
 
         private void CheckForBlackjack()
