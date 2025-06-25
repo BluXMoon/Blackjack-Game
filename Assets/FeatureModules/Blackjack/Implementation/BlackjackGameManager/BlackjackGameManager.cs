@@ -38,7 +38,7 @@ namespace Blackjack
             DrawForPlayer();
             DrawForDealer();
 
-            CheckForBlackjack();
+            CheckForPlayerBlackJack();
         }
 
         public void RestartGame()
@@ -59,6 +59,7 @@ namespace Blackjack
         public void PlayerStands()
         {
             OnPlayerStands?.Invoke();
+            CheckForDealerBlackjack();
             
             while (_dealerHand.GetScore() < 17)
             {
@@ -98,12 +99,29 @@ namespace Blackjack
             _phaseSetter.SetPhase(gameOverPhase);
         }
 
-        private void CheckForBlackjack()
+        private void CheckForPlayerBlackJack()
         {
-            if (_playerHand.IsBlackjack || _dealerHand.IsBlackjack)
+            switch (_playerHand.IsBlackjack)
             {
-                EndGame();
+                case false:
+                    return;
+                case true when _dealerHand.IsBlackjack:
+                    OnGameOver?.Invoke(GameOutcome.Draw);
+                    _phaseSetter.SetPhase(gameOverPhase);
+                    return;
+                default:
+                    OnGameOver?.Invoke(GameOutcome.PlayerBlackjack);
+                    _phaseSetter.SetPhase(gameOverPhase);
+                    break;
             }
+        }
+
+        private void CheckForDealerBlackjack()
+        {
+            if (!_dealerHand.IsBlackjack) return;
+            
+            OnGameOver?.Invoke(GameOutcome.DealerBlackjack);
+            _phaseSetter.SetPhase(gameOverPhase);
         }
     }
 }

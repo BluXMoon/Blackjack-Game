@@ -18,12 +18,12 @@ namespace Blackjack
         private string TranslateOutcomeToString(GameOutcome outcome) =>
             outcome switch
             {
-                GameOutcome.DealerLost => "Dealer Lost",
-                GameOutcome.DealerWon => "Dealer Won",
-                GameOutcome.PlayerWon => "Player Won",
-                GameOutcome.PlayerLost => "Player Lost",
-                GameOutcome.PlayerBlackjack => "Player Blackjack",
-                GameOutcome.DealerBlackjack => "Dealer Blackjack",
+                GameOutcome.DealerLost => "Dealer Lost With Total Points Over 21",
+                GameOutcome.DealerWon => "Dealer Won With More Points Than Player",
+                GameOutcome.PlayerWon => "Player Won With More Points Than Dealer",
+                GameOutcome.PlayerLost => "Player Lost With Total Points Over 21",
+                GameOutcome.PlayerBlackjack => "Player Won With Blackjack",
+                GameOutcome.DealerBlackjack => "Dealer Won With Blackjack",
                 _ => "Draw"
             };
     }

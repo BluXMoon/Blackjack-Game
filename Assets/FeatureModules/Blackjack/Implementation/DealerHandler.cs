@@ -26,6 +26,7 @@ namespace Blackjack
         {
             _blackjackGameManager.OnDealerCardDrawn += DealerGetsNewCard;
             _blackjackGameManager.OnPlayerStands += PlayerStands;
+            _blackjackGameManager.OnGameOver += OnGameOver;
             _blackjackGameManager.OnGameRestart += ClearAllCardsAndRestart;
         }
 
@@ -33,6 +34,7 @@ namespace Blackjack
         {
             _blackjackGameManager.OnDealerCardDrawn -= DealerGetsNewCard;
             _blackjackGameManager.OnPlayerStands -= PlayerStands;
+            _blackjackGameManager.OnGameOver -= OnGameOver;
             _blackjackGameManager.OnGameRestart -= ClearAllCardsAndRestart;
         }
 
@@ -51,6 +53,7 @@ namespace Blackjack
         }
         
         private void PlayerStands() => ShowAllCards();
+        private void OnGameOver(GameOutcome outcome) => ShowAllCards();
 
         private void ShowAllCards()
         {
