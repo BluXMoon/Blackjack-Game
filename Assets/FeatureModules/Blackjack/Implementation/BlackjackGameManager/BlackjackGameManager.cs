@@ -12,9 +12,10 @@ namespace Blackjack
         
         private BlackjackHand _playerHand;
         private BlackjackHand _dealerHand;
-        
+
         [Inject] private IDeckManager _deckManager;
         [Inject] private IPhaseSetter _phaseSetter;
+        [Inject] private IDealerRuleFactory _dealerRuleFactory;
 
         public Action<BlackjackCard> OnPlayerCardDrawn { get; set; }
         public Action OnPlayerStands { get; set; }
@@ -61,7 +62,11 @@ namespace Blackjack
             OnPlayerStands?.Invoke();
             CheckForDealerBlackjack();
             
-            while (_dealerHand.GetScore() < 17)
+            var rules = _dealerRuleFactory.GetRulesFor(_dealerHand);
+            var compositeRule = new CompositeDealerRule();
+            rules.ForEach(r => compositeRule.AddRule(r));
+
+            while (compositeRule.ShouldDrawCard(_dealerHand, _playerHand) && _dealerHand.GetScore() <= 21)
             {
                 DrawForDealer();
             }

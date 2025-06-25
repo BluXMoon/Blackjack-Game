@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Blackjack
 {
@@ -29,6 +30,22 @@ namespace Blackjack
             }
 
             return total;
+        }
+        
+        public bool HasSoftAce()
+        {
+            var score = 0;
+            var aceCount = 0;
+
+            foreach (var card in Cards)
+            {
+                if (card.card.rank == CardRank.Ace)
+                    aceCount++;
+                else
+                    score += Mathf.Min(card.GetValue(), 10);
+            }
+
+            return aceCount > 0 && score + 11 + (aceCount - 1) <= 21;
         }
 
         public bool IsBlackjack => Cards.Count == 2 && GetScore() == 21;
