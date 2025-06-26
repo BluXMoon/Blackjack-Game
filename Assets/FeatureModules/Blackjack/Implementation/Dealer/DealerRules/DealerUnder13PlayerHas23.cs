@@ -9,7 +9,7 @@ namespace Blackjack
             if (dealer.GetScore() >= 13) return false;
 
             return player.Cards.Any(c =>
-                c.card.rank == CardRank.Two || c.card.rank == CardRank.Three);
+                c.card.rank is CardRank.Two or CardRank.Three);
         }
     }
 }

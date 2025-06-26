@@ -17,7 +17,6 @@ namespace Blackjack
             {
                 rules.Add(new DealerStopsAt19WithAce11());
                 rules.Add(new DealerStopsAt18With3CardsUnlessPlayerStrong());
-                rules.Add(new DealerDrawsWithAce11IfNotCovered());
             }
             else
             {
