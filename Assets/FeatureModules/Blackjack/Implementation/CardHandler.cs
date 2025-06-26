@@ -14,9 +14,9 @@ namespace Blackjack
         public void SetCard(BlackjackCard card, bool showBackCardSprite = false)
         {
             _card = card;
-            _cardImage.sprite = showBackCardSprite ? _card.card.cardBackSprite : _card.card.cardSprite;
+            _cardImage.sprite = _card.GetSprite(showBackCardSprite);
         }
 
-        public void RevealCard() => _cardImage.sprite = _card.card.cardSprite;
+        public void RevealCard() => _cardImage.sprite = _card.GetSprite();
     }
 }
