@@ -11,12 +11,12 @@ namespace Blackjack
 
         public int GetScore()
         {
-            int total = 0;
-            int aceCount = 0;
+            var total = 0;
+            var aceCount = 0;
 
             foreach (var card in Cards)
             {
-                int value = card.GetValue();
+                var value = card.GetValue();
                 total += value;
 
                 if (card.card.rank == CardRank.Ace)
