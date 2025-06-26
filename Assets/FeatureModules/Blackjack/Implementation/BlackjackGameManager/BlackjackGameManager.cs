@@ -60,7 +60,7 @@ namespace Blackjack
         public void PlayerStands()
         {
             OnPlayerStands?.Invoke();
-            CheckForDealerBlackjack();
+            if (DealerHasBlackjack()) return;
             
             var rules = _dealerRuleFactory.GetRulesFor(_dealerHand);
             var compositeRule = new CompositeDealerRule();
@@ -121,12 +121,13 @@ namespace Blackjack
             }
         }
 
-        private void CheckForDealerBlackjack()
+        private bool DealerHasBlackjack()
         {
-            if (!_dealerHand.IsBlackjack) return;
+            if (!_dealerHand.IsBlackjack) return false;
             
             OnGameOver?.Invoke(GameOutcome.DealerBlackjack);
             _phaseSetter.SetPhase(gameOverPhase);
+            return true;
         }
     }
 }
