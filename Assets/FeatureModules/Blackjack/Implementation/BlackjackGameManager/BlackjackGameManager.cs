@@ -60,7 +60,11 @@ namespace Blackjack
         public void PlayerStands()
         {
             OnPlayerStands?.Invoke();
-            if (DealerHasBlackjack()) return;
+            if (DealerHasBlackjack())
+            {
+                EndGame();
+                return;
+            }
             
             var rules = _dealerRuleFactory.GetRulesFor(_dealerHand);
             var compositeRule = new CompositeDealerRule();
@@ -95,10 +99,24 @@ namespace Blackjack
 
             var result = GameOutcome.Draw;
             
-            if (player > 21) result = GameOutcome.PlayerLost;
-            else if (dealer > 21) result = GameOutcome.DealerLost;
-            else if (player > dealer) result = GameOutcome.PlayerWon;
-            else if (dealer > player) result = GameOutcome.DealerWon;
+            switch (_playerHand.IsBlackjack)
+            {
+                case true when _dealerHand.IsBlackjack:
+                    result = GameOutcome.Draw;
+                    break;
+                case true:
+                    result = GameOutcome.PlayerBlackjack;
+                    break;
+                default:
+                {
+                    if(_dealerHand.IsBlackjack) result = GameOutcome.DealerBlackjack;
+                    else if (player > 21) result = GameOutcome.PlayerLost;
+                    else if (dealer > 21) result = GameOutcome.DealerLost;
+                    else if (player > dealer) result = GameOutcome.PlayerWon;
+                    else if (dealer > player) result = GameOutcome.DealerWon;
+                    break;
+                }
+            }
             
             OnGameOver?.Invoke(result);
             _phaseSetter.SetPhase(gameOverPhase);
@@ -111,23 +129,12 @@ namespace Blackjack
                 case false:
                     return;
                 case true when _dealerHand.IsBlackjack:
-                    OnGameOver?.Invoke(GameOutcome.Draw);
-                    _phaseSetter.SetPhase(gameOverPhase);
-                    return;
                 default:
-                    OnGameOver?.Invoke(GameOutcome.PlayerBlackjack);
-                    _phaseSetter.SetPhase(gameOverPhase);
-                    break;
+                    EndGame();
+                    return;
             }
         }
 
-        private bool DealerHasBlackjack()
-        {
-            if (!_dealerHand.IsBlackjack) return false;
-            
-            OnGameOver?.Invoke(GameOutcome.DealerBlackjack);
-            _phaseSetter.SetPhase(gameOverPhase);
-            return true;
-        }
+        private bool DealerHasBlackjack() => _dealerHand.IsBlackjack;
     }
 }
